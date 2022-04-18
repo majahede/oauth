@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using assignment_wt1_oauth.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace assignment_wt1_oauth.Controllers;
 
@@ -17,15 +18,41 @@ public class HomeController : Controller
     {
         return View();
     }
-
-    public IActionResult Privacy()
+    
+    [Authorize]
+    public IActionResult Secret()
     {
         return View();
     }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    
+    
+    [Authorize]
+    public IActionResult Code()
     {
-        return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+        Console.Write("Code");
+       return View();
+    }
+    
+    public IActionResult Authenticate()
+    {
+        var userClaims = new List<Claim>()
+        {   
+            new Claim(ClaimTypes.Name, "Maja"),
+            new Claim(ClaimTypes.Email, "maja@mail.com")
+        };
+
+        var licenceClaims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name, "Maja"),
+            new Claim(ClaimTypes.Email, "maja@mail.com")
+        };
+        
+        var userIdentity = new ClaimsIdentity(userClaims, "User Identity");
+
+        var userPrincipal = new ClaimsPrincipal(new[] {userIdentity});
+
+        HttpContext.SignInAsync(userPrincipal);
+        
+        return RedirectToAction("Index");
     }
 }

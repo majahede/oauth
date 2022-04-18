@@ -1,57 +1,44 @@
-using assignment_wt1_oauth.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+var configurationBuilder = builder.Configuration.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("Properties/appsettings.json")
+    .AddJsonFile($"Properties/appsettings.{builder.Environment.EnvironmentName}.json")
+    .AddEnvironmentVariables()
+    .Build();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+var services = builder.Services;
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+/*services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", config =>
+    {
+        config.Cookie.Name = "User.cookie";
+        config.LoginPath = "/Home/Authenticate";
+    });*/
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+ services.AddAuthentication(config =>
+ {
+     config.DefaultAuthenticateScheme = "ClientCookie";
+     config.DefaultSignInScheme = "ClientCookie";
+     config.DefaultChallengeScheme = "OurServer";
+ })
+     .AddCookie("ClientCookie")
+     .AddOAuth("OurServer", config =>
+     {
+         config.CallbackPath = "/oath/callback";
+         config.ClientId = "202ec997c4f67a7567a84d4f163b29d1c76e5083b92cbb127808da4d3678c464";
+         config.ClientSecret = "ecb3145e58a6158796894284b83b0682404a777373a061d7165cab5898b7dbec";
 
-app.UseRouting();
+     });
 
-app.UseAuthentication();
-app.UseAuthorization();
+services.AddAuthentication();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
-
-app.Run();
-
-/*
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -67,8 +54,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
+/*app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");*/
 
-app.Run();*/
+//app.MapRazorPages();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
+
+
+app.Run();

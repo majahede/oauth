@@ -1,5 +1,3 @@
-C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\appsettings.Development.json
-C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\appsettings.json
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\assignment-wt1-oauth.staticwebassets.runtime.json
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\assignment-wt1-oauth.exe
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\assignment-wt1-oauth.deps.json
@@ -17,9 +15,7 @@ C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\assignment-wt
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\assignment-wt1-oauth.RazorAssemblyInfo.cs
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\staticwebassets.build.json
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\staticwebassets.development.json
-C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\scopedcss\bundle\assignment-wt1-oauth.styles.css
-C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\scopedcss\projectbundle\assignment-wt1-oauth.bundle.scp.css
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\assignment-wt1-oauth.dll
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\ref\assignment-wt1-oauth.dll
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\assignment-wt1-oauth.pdb
@@ -68,3 +64,6 @@ C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\runtimes\win\
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\maja\courses\1dv027\assignment-wt1-oauth\obj\Debug\net6.0\assignment-wt1-oauth.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\Properties\appsettings.json
+C:\Users\maja\courses\1dv027\assignment-wt1-oauth\bin\Debug\net6.0\Properties\appsettings.Development.json
