@@ -1,17 +1,27 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace assignment_wt1_oauth.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly string _callbackPath;
+    private readonly string _tokenEndpoint;
+    private readonly string _clientId;
+    private readonly string _clientSecret;
+    private readonly string _authorizationEndpoint;
+    
+    public HomeController(ILogger<HomeController> logger, IOptions<AuthSettings> settings)
     {
         _logger = logger;
+        _tokenEndpoint = settings.Value.TokenEndpoint;
+        _authorizationEndpoint = settings.Value.AuthorizationEndpoint;
+        _callbackPath = settings.Value.CallbackPath;
+        _clientId = settings.Value.ClientId;
+        _clientSecret = settings.Value.ClientSecret;
     }
 
     public IActionResult Index()
@@ -19,40 +29,14 @@ public class HomeController : Controller
         return View();
     }
     
-    [Authorize]
-    public IActionResult Secret()
+    public IActionResult Activities()
     {
         return View();
     }
     
-    
-    [Authorize]
-    public IActionResult Code()
+    public void Login()
     {
-        Console.Write("Code");
-       return View();
-    }
-    
-    public IActionResult Authenticate()
-    {
-        var userClaims = new List<Claim>()
-        {   
-            new Claim(ClaimTypes.Name, "Maja"),
-            new Claim(ClaimTypes.Email, "maja@mail.com")
-        };
-
-        var licenceClaims = new List<Claim>()
-        {
-            new Claim(ClaimTypes.Name, "Maja"),
-            new Claim(ClaimTypes.Email, "maja@mail.com")
-        };
-        
-        var userIdentity = new ClaimsIdentity(userClaims, "User Identity");
-
-        var userPrincipal = new ClaimsPrincipal(new[] {userIdentity});
-
-        HttpContext.SignInAsync(userPrincipal);
-        
-        return RedirectToAction("Index");
+        Response.Redirect(
+            $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state=12345&scope=read_api");
     }
 }

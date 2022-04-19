@@ -9,35 +9,23 @@ var configurationBuilder = builder.Configuration.SetBasePath(AppDomain.CurrentDo
 
 var services = builder.Services;
 
+var settingsSection = configurationBuilder.GetSection("AuthSettings");
+services.Configure<AuthSettings>(settingsSection);
 
-/*services.AddAuthentication("CookieAuth")
-    .AddCookie("CookieAuth", config =>
+var settings = settingsSection.Get<AuthSettings>();
+
+services.AddAuthentication(config =>
     {
-        config.Cookie.Name = "User.cookie";
-        config.LoginPath = "/Home/Authenticate";
-    });*/
-
- services.AddAuthentication(config =>
- {
-     config.DefaultAuthenticateScheme = "ClientCookie";
-     config.DefaultSignInScheme = "ClientCookie";
-     config.DefaultChallengeScheme = "OurServer";
- })
-     .AddCookie("ClientCookie")
-     .AddOAuth("OurServer", config =>
-     {
-         config.CallbackPath = "/oath/callback";
-         config.ClientId = "202ec997c4f67a7567a84d4f163b29d1c76e5083b92cbb127808da4d3678c464";
-         config.ClientSecret = "ecb3145e58a6158796894284b83b0682404a777373a061d7165cab5898b7dbec";
-
-     });
+        config.DefaultAuthenticateScheme = "ClientCookie";
+        config.DefaultSignInScheme = "ClientCookie";
+    })
+    .AddCookie("ClientCookie");
 
 services.AddAuthentication();
 
 services.AddControllersWithViews();
 
 var app = builder.Build();
-
 
 if (!app.Environment.IsDevelopment())
 {
