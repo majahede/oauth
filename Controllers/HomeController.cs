@@ -1,9 +1,11 @@
 ﻿using System.Net.Http.Headers;
 using System.Security.Claims;
+using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace assignment_wt1_oauth.Controllers;
 
@@ -39,10 +41,9 @@ public class HomeController : Controller
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
         var responseBody = await response.Content.ReadAsStringAsync();
-        var oMycustomclassname = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
-        Console.WriteLine(oMycustomclassname?[0].author.username);
-
-        return View();
+      //  var events = JsonConvert.DeserializeObject<Event>(responseBody);
+        var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
+        return View(events);
     }
 
     public void Login()
