@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -23,12 +24,13 @@ public class HomeController : Controller
         _clientId = settings.Value.ClientId;
         _clientSecret = settings.Value.ClientSecret;
     }
-
+    
     public IActionResult Index()
     {
         return View();
     }
     
+    [Authorize]
     public IActionResult Activities()
     {
         return View();

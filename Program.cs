@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var configurationBuilder = builder.Configuration.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -14,15 +16,16 @@ services.Configure<AuthSettings>(settingsSection);
 
 var settings = settingsSection.Get<AuthSettings>();
 
-services.AddAuthentication(config =>
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        config.DefaultAuthenticateScheme = "ClientCookie";
-        config.DefaultSignInScheme = "ClientCookie";
-    })
-    .AddCookie("ClientCookie");
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden/";
+    });
 
 services.AddAuthentication();
-
+services.AddRazorPages();
 services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -30,7 +33,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -46,12 +48,13 @@ app.UseAuthorization();
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");*/
 
-//app.MapRazorPages();
+app.MapRazorPages();
+app.MapDefaultControllerRoute();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapDefaultControllerRoute();
-});
+// app.UseEndpoints(endpoints =>
+// {
+//     endpoints.MapDefaultControllerRoute();
+// });
 
 
 app.Run();
