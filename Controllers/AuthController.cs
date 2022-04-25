@@ -37,23 +37,21 @@ public class AuthController : Controller
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        var result = JsonSerializer.Deserialize<AuthResponse>(responseBody);
+        var result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
 
         var token = result?.access_token;
 
-        if (token != null)
-        { var identity = new ClaimsIdentity(new[] {
-                new Claim(ClaimTypes.Authentication, token)
-            }, CookieAuthenticationDefaults.AuthenticationScheme);
+        if (token == null) return RedirectToAction("Index", "Home");
+        
+        var identity = new ClaimsIdentity(new[] {
+            new Claim(ClaimTypes.Authentication, token.ToString())
+        }, CookieAuthenticationDefaults.AuthenticationScheme);
             
-            var principal = new ClaimsPrincipal(identity);
-            var login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            return RedirectToAction("Activities", "Home");
-        }
-
-        return RedirectToAction("Index", "Home");
-        // return View("~/Views/Home/Activities.cshtml");
-        //Response.Redirect("https://localhost:7100/Activities");
-        //   Response.Redirect($"https://localhost:7100/Activities/?token={token}");
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        var cookie = Request.Cookies;
+        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
+  
+        return RedirectToAction("Activities", "Home");
     }
 }

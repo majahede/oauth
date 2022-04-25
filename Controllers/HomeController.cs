@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Http.Headers;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,11 +32,19 @@ public class HomeController : Controller
     }
     
     [Authorize]
-    public IActionResult Activities()
+    public async Task<IActionResult> Activities()
     {
+        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var oMycustomclassname = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
+        Console.WriteLine(oMycustomclassname?[0].author.username);
+
         return View();
     }
-    
+
     public void Login()
     {
         Response.Redirect(
