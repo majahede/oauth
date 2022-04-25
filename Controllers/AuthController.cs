@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using System.Text.Json;
-using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +36,6 @@ public class AuthController : Controller
         var responseBody = await response.Content.ReadAsStringAsync();
 
         var result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
-
         var token = result?.access_token;
 
         if (token == null) return RedirectToAction("Index", "Home");
@@ -49,9 +46,7 @@ public class AuthController : Controller
             
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        var cookie = Request.Cookies;
-        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
-  
+        
         return RedirectToAction("Activities", "Home");
     }
 }
