@@ -61,13 +61,14 @@ public class HomeController : Controller
         var response = await client.GetAsync($"https://gitlab.lnu.se/api/v4/user"); 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        var u = JsonConvert.DeserializeObject<dynamic>(responseBody);
+        var user = JsonConvert.DeserializeObject<dynamic>(responseBody);
         
-        ViewBag.GitlabId = u.id;
-        ViewBag.Email = u.email;
-        ViewBag.Name = u.name;
-        ViewBag.Username = u.username;
-        ViewBag.LastActivity = u.last_activity_on;
+        ViewBag.GitlabId = user.id;
+        ViewBag.Email = user.email;
+        ViewBag.Name = user.name;
+        ViewBag.Username = user.username;
+        ViewBag.LastActivity = user.last_activity_on;
+        ViewBag.Avatar = user.avatar_url;
 
         return View();
     }
