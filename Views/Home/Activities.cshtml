@@ -1,13 +1,13 @@
 @model assignment_wt1_oauth.Models.Event
 @{
-    ViewBag.Title = "Activities";
+    ViewBag["Title"]  = "Activities";
 }
 <h2>GetJsonDataModel</h2>
 
 @{ 
     <table>
         <tr>
-            <th>userId</th>
+            <th>@ViewBag</th>
             <th>id</th>
             <th>title</th>
             <th>completed</th>
