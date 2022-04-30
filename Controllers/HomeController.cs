@@ -41,21 +41,24 @@ public class HomeController : Controller
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
         var responseBody = await response.Content.ReadAsStringAsync();
-
-        var user = await client.GetAsync("https://gitlab.lnu.se/api/v4/users?username=mh223pi");
-        var userresponseBody = await user.Content.ReadAsStringAsync();
-        Console.WriteLine(userresponseBody);
-        // Event events = JsonConvert.DeserializeObject<Event>(myJsonResponse);
-       // var events = JsonConvert.DeserializeObject<g>(responseBody);
         
-        var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
-      //  Console.WriteLine(events);
+       var user = await client.GetAsync($"https://gitlab.lnu.se/api/v4/user"); 
+        var userresponseBody = await user.Content.ReadAsStringAsync();
+       // Console.WriteLine(responseBody);
+      //  Console.WriteLine(userresponseBody);
+       //Event events = JsonConvert.DeserializeObject<Event>(responseBody);
+     //  var events = JsonConvert.DeserializeObject<g>(responseBody);
+        
+       var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
+       var u = JsonConvert.DeserializeObject<dynamic>(userresponseBody);
+       Console.WriteLine(u.email);
+      // Console.WriteLine(events);
         return View();
     }
 
     public void Login()
     {
         Response.Redirect(
-            $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state=12345&scope=read_api");
+            $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state=12345&scope=read_api+read_user+openid+profile+email");
     }
 }
