@@ -1,19 +1,25 @@
-@model assignment_wt1_oauth.Models.Event
+@model List<assignment_wt1_oauth.Models.Activity>
 @{
     ViewBag.title = "Activities";
 }
-<h2>GetJsonDataModel</h2>
+<h2>Activities</h2>
 
 @{ 
     <table>
         <tr>
-            <th></th>
-            <th>id</th>
-            <th>title</th>
-            <th>completed</th>
+            <th>Action Name</th>
+            <th>Created At</th>
+            <th>Target Title</th>
+            <th>Target Type</th>
         </tr>
-        <tr>
-            <th></th>
-        </tr>
+        @foreach (var activity in Model)
+        {
+            <tr>
+                <td>@activity.ActionName</td>
+                <td>@activity.CreatedAt</td>
+                <td>@activity.TargetTitle</td>
+                <td>@activity.TargetType</td>
+            </tr>
+        }
     </table>
 }

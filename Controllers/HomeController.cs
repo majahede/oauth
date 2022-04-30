@@ -43,12 +43,23 @@ public class HomeController : Controller
         var responseBody = await response.Content.ReadAsStringAsync();
         
        //Event events = JsonConvert.DeserializeObject<Event>(responseBody);
-
-        
-       var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
-
-      // Console.WriteLine(events);
-        return View();
+       var activities = JsonConvert.DeserializeObject<dynamic>(responseBody);
+       var activityList = new List<Activity>();
+       
+       foreach (var activity in activities)
+       {
+           var a = new Activity()
+           {
+               ActionName = activity.action_name,
+               CreatedAt = activity.created_at,
+               TargetTitle = activity.target_title,
+               TargetType = activity.target_type
+           };
+           
+           activityList.Add(a);
+       }
+       
+        return View(activityList);
     }
     
     [Authorize]
@@ -70,6 +81,7 @@ public class HomeController : Controller
         ViewBag.LastActivity = user.last_activity_on;
         ViewBag.Avatar = user.avatar_url;
 
+       // Console.WriteLine(user);
         return View();
     }
 
