@@ -42,17 +42,33 @@ public class HomeController : Controller
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
         var responseBody = await response.Content.ReadAsStringAsync();
         
-       var user = await client.GetAsync($"https://gitlab.lnu.se/api/v4/user"); 
-        var userresponseBody = await user.Content.ReadAsStringAsync();
-       // Console.WriteLine(responseBody);
-      //  Console.WriteLine(userresponseBody);
        //Event events = JsonConvert.DeserializeObject<Event>(responseBody);
-     //  var events = JsonConvert.DeserializeObject<g>(responseBody);
+
         
        var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
-       var u = JsonConvert.DeserializeObject<dynamic>(userresponseBody);
-       Console.WriteLine(u.email);
+
       // Console.WriteLine(events);
+        return View();
+    }
+    
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        var response = await client.GetAsync($"https://gitlab.lnu.se/api/v4/user"); 
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var u = JsonConvert.DeserializeObject<dynamic>(responseBody);
+        
+        ViewBag.GitlabId = u.id;
+        ViewBag.Email = u.email;
+        ViewBag.Name = u.name;
+        ViewBag.Username = u.username;
+        ViewBag.LastActivity = u.last_activity_on;
+
         return View();
     }
 

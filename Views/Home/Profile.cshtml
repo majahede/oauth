@@ -1,9 +1,21 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model assignment_wt1_oauth.Models.Event
+@{
+    ViewBag.Title = "Profile";
 }
+<h2>Profile</h2>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    
-    <button type="button" onclick="location.href='@Url.Action("Login", "Home")'">Login With gitlab</button>
-</div>
+@{ 
+    <div>
+        <p>Gitlab ID</p>
+        <p>@ViewBag.GitlabId</p>
+        <p>Email</p>
+        <p>@ViewBag.Email</p>
+        <p>Name</p>
+        <p>@ViewBag.Name</p>
+        <p>Username</p>
+        <p>@ViewBag.Username</p>
+        <p>Last Activity</p>
+        <p>@ViewBag.LastActivity</p>
+    </div>
+   
+}
