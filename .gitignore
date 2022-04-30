@@ -423,7 +423,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Settings
-Properties/appsettings.Development.json
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,windows,macos,linux,rider

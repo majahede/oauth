@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -37,7 +38,10 @@ public class AuthController : Controller
 
         var result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
         var token = result?.access_token;
+     //   var handler = new JwtSecurityTokenHandler();
 
+    //    var jsonToken = handler.ReadToken(token?.ToString());
+        Console.WriteLine(token);
         if (token == null) return RedirectToAction("Index", "Home");
         
         var identity = new ClaimsIdentity(new[] {

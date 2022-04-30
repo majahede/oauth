@@ -41,9 +41,16 @@ public class HomeController : Controller
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
         var responseBody = await response.Content.ReadAsStringAsync();
-      //  var events = JsonConvert.DeserializeObject<Event>(responseBody);
+
+        var user = await client.GetAsync("https://gitlab.lnu.se/api/v4/users?username=mh223pi");
+        var userresponseBody = await user.Content.ReadAsStringAsync();
+        Console.WriteLine(userresponseBody);
+        // Event events = JsonConvert.DeserializeObject<Event>(myJsonResponse);
+       // var events = JsonConvert.DeserializeObject<g>(responseBody);
+        
         var events = JsonConvert.DeserializeObject<dynamic>(responseBody);
-        return View(events);
+      //  Console.WriteLine(events);
+        return View();
     }
 
     public void Login()
