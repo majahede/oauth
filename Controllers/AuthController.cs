@@ -50,4 +50,6 @@ public class AuthController : Controller
         
         return RedirectToAction("Activities", "Home");
     }
+    
+    
 }

@@ -11,21 +11,15 @@ namespace assignment_wt1_oauth.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly string _callbackPath;
-    private readonly string _tokenEndpoint;
     private readonly string _clientId;
-    private readonly string _clientSecret;
     private readonly string _authorizationEndpoint;
     
-    public HomeController(ILogger<HomeController> logger, IOptions<AuthSettings> settings)
+    public HomeController( IOptions<AuthSettings> settings)
     {
-        _logger = logger;
-        _tokenEndpoint = settings.Value.TokenEndpoint;
         _authorizationEndpoint = settings.Value.AuthorizationEndpoint;
         _callbackPath = settings.Value.CallbackPath;
         _clientId = settings.Value.ClientId;
-        _clientSecret = settings.Value.ClientSecret;
     }
     
     public IActionResult Index()
@@ -39,10 +33,10 @@ public class HomeController : Controller
         var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+       
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
         var responseBody = await response.Content.ReadAsStringAsync();
         
-       //Event events = JsonConvert.DeserializeObject<Event>(responseBody);
        var activities = JsonConvert.DeserializeObject<dynamic>(responseBody);
        var activityList = new List<Activity>();
        
@@ -81,7 +75,6 @@ public class HomeController : Controller
         ViewBag.LastActivity = user.last_activity_on;
         ViewBag.Avatar = user.avatar_url;
 
-       // Console.WriteLine(user);
         return View();
     }
 
