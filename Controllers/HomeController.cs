@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace assignment_wt1_oauth.Controllers;
 
@@ -34,12 +35,18 @@ public class HomeController : Controller
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
        
-        var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=101");
+        var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?per_page=51");
         var responseBody = await response.Content.ReadAsStringAsync();
-        
+        var page2 = await client.GetAsync("https://gitlab.lnu.se/api/v4/events?page=2&per_page=50&sort=desc>");
+        var ev = await page2.Content.ReadAsStringAsync();
+        var even = responseBody + ev;
+
        var activities = JsonConvert.DeserializeObject<dynamic>(responseBody);
+       var ac = JsonConvert.DeserializeObject<dynamic>(ev);
        var activityList = new List<Activity>();
+       var jArray = new JArray(activities, ac);
        
+      // Console.WriteLine(activities[100]);
        foreach (var activity in activities)
        {
            var a = new Activity()
@@ -52,7 +59,7 @@ public class HomeController : Controller
            
            activityList.Add(a);
        }
-       
+       Console.WriteLine(activities[100]);
         return View(activityList);
     }
     
