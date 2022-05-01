@@ -90,4 +90,9 @@ public class HomeController : Controller
         Response.Redirect(
             $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state=12345&scope=read_api+read_user+openid+profile+email");
     }
+    
+    public void Logout()
+    {
+       
+    }
 }
