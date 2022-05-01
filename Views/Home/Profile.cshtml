@@ -1,9 +1,11 @@
 ﻿@{
     ViewBag.Title = "Profile";
 }
-<h2>Profile</h2>
 
 @{ 
+    <div>
+        <img src=@ViewBag.Avatar alt="avatar" width="70" height="70">
+    </div>
     <div>
         <p>Gitlab ID</p>
         <p>@ViewBag.GitlabId</p>
@@ -16,7 +18,5 @@
         <p>Last Activity</p>
         <p>@ViewBag.LastActivity</p>
     </div>
-    <div>
-           <img src=@ViewBag.Avatar alt="avatar" width="70" height="70">
-    </div>
+    
 }
