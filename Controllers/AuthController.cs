@@ -48,7 +48,7 @@ public class AuthController : Controller
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         
-        return RedirectToAction("Activities", "Home");
+        return RedirectToAction("Index", "Home");
     }
     
     
