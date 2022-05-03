@@ -17,7 +17,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Activities()
     {
-        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
+        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "AccessToken")?.Value;
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
@@ -48,7 +48,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Profile()
     {
-        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
+        var accessToken = HttpContext.User.Claims.FirstOrDefault(x => x.Type ==  "AccessToken")?.Value;
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 

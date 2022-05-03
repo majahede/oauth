@@ -1,9 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace assignment_wt1_oauth.Controllers;
 public class AuthController : Controller
@@ -35,24 +37,25 @@ public class AuthController : Controller
         response.EnsureSuccessStatusCode();
 
         var responseBody = await response.Content.ReadAsStringAsync();
-
-        var result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
-
-        var token = result?.access_token;
-        var idToken = result?.id_token;
-
-        var handler = new JwtSecurityTokenHandler();
-        var jwtSecurityToken = handler.ReadJwtToken(idToken.ToString());
-        Console.WriteLine(jwtSecurityToken);
         
-        if (token == null) return RedirectToAction("Index", "Home");
+        var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
+
+        var res = new TokenResponse()
+        {
+            AccessToken = result.access_token,
+            IdToken = result.id_token
+        };
+        
+        var handler = new JwtSecurityTokenHandler();
+        var idToken = handler.ReadJwtToken(res.IdToken);
+        
+        if (res.AccessToken == null) return RedirectToAction("Index", "Home");
       
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Email, jwtSecurityToken.email),
-            new Claim("Id", jwtSecurityToken.sub ),
-            new Claim(ClaimTypes.Expiration, jwtSecurityToken.exp),
-            new Claim("AccessToken", token),
+            new Claim("Id", idToken.Subject ), 
+            new Claim(ClaimTypes.Email, idToken.Claims.First(claim => claim.Type == "email").Value),
+            new Claim( "AccessToken", res.AccessToken),
         };
 
         var claimsIdentity = new ClaimsIdentity(
