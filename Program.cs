@@ -17,9 +17,9 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.Cookie.Name = "cookie";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-        options.SlidingExpiration = true;
-        options.AccessDeniedPath = "/";
+        options.AccessDeniedPath = "Home/Index";
+        options.LoginPath = "Home/Index";
+        options.LogoutPath = "Home/Index";
     });
 
 services.AddAuthentication();
