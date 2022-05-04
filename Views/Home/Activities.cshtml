@@ -1,16 +1,17 @@
 @model List<assignment_wt1_oauth.Models.Activity>
+
 @{
     ViewBag.title = "Activities";
 }
-<h2>Activities</h2>
+<h1>Activities</h1>
 
 @{ 
     <table>
         <tr>
-            <th>Action Name</th>
-            <th>Created At</th>
-            <th>Target Title</th>
-            <th>Target Type</th>
+            <th >Action Name</th>
+            <th >Created At</th>
+            <th >Target Title</th>
+            <th >Target Type</th>
         </tr>
         
         @foreach (var activity in Model)
