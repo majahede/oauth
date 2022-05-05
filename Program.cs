@@ -14,6 +14,15 @@ var services = builder.Services;
 var settingsSection = configurationBuilder.GetSection("AuthSettings");
 services.Configure<AuthSettings>(settingsSection);
 
+services.AddDistributedMemoryCache();
+
+services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -39,6 +48,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
