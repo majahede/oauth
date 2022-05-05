@@ -17,7 +17,7 @@ services.Configure<AuthSettings>(settingsSection);
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.Cookie.Name = "cookie";
+        options.Cookie.Name = ".WT1.Cookie";
         options.AccessDeniedPath = "/Home/Index";
         options.LoginPath = "/Home/Index";
         options.LogoutPath = "/Home/Index";
