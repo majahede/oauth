@@ -1,3 +1,4 @@
+using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);

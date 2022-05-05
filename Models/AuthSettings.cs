@@ -1,3 +1,5 @@
+namespace assignment_wt1_oauth.Models;
+
 public class AuthSettings
 {
     public string CallbackPath { get; set; } = null!;
