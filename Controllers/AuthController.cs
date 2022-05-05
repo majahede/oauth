@@ -31,6 +31,7 @@ public class AuthController : Controller
     public async Task<RedirectToActionResult> Callback()
     {
         if (Request.Query["error"] == "access_denied") return RedirectToAction("Index", "Home");
+        if (Request.Query["state"] != HttpContext.Session.GetString("State")) return RedirectToAction("Error", "Home");
         
         var code = Request.Query["code"];
         var url = $"{_tokenEndpoint}?client_id={_clientId}&client_secret={_clientSecret}&code={code}&grant_type=authorization_code&redirect_uri={_callbackPath}";
@@ -82,6 +83,8 @@ public class AuthController : Controller
             state += str[x];
         }
         
+        HttpContext.Session.SetString("State", state);
+        
         Response.Redirect(
             $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state={state}&scope={_scope}");
     }
@@ -89,7 +92,7 @@ public class AuthController : Controller
     public async Task<RedirectToActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        
+        HttpContext.Session.Clear();
         return RedirectToAction("Index", "Home");
     }
 }
