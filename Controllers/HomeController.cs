@@ -52,7 +52,7 @@ public class HomeController : Controller
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var response = await client.GetAsync($"https://gitlab.lnu.se/api/v4/user"); 
+        var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/user"); 
         var responseBody = await response.Content.ReadAsStringAsync();
 
         var user = JsonConvert.DeserializeObject<dynamic>(responseBody);

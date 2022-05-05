@@ -27,17 +27,17 @@ public class AuthController : Controller
 
     public async Task<RedirectToActionResult> Callback()
     {
+
+        if (Request.Query["error"] == "access_denied") return RedirectToAction("Index", "Home");
+        
         var code = Request.Query["code"];
 
         var url = $"{_tokenEndpoint}?client_id={_clientId}&client_secret={_clientSecret}&code={code}&grant_type=authorization_code&redirect_uri={_callbackPath}";
 
         var client = new HttpClient();
         var response = await client.PostAsync(url, null);
-
-        response.EnsureSuccessStatusCode();
-
         var responseBody = await response.Content.ReadAsStringAsync();
-        
+
         var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
         var res = new TokenResponse()
@@ -45,23 +45,24 @@ public class AuthController : Controller
             AccessToken = result.access_token,
             IdToken = result.id_token
         };
-        
+
         var handler = new JwtSecurityTokenHandler();
         var idToken = handler.ReadJwtToken(res.IdToken);
-        
+
         if (res.AccessToken == null) return RedirectToAction("Index", "Home");
-      
+
         var claims = new List<Claim>
         {
-            new Claim("Id", idToken.Subject ), 
-            new Claim(ClaimTypes.Email, idToken.Claims.First(claim => claim.Type == "email").Value),
-            new Claim( "AccessToken", res.AccessToken),
+            new ("Id", idToken.Subject ), 
+            new (ClaimTypes.Email, idToken.Claims.First(claim => claim.Type == "email").Value),
+            new ( "AccessToken", res.AccessToken),
         };
 
         var claimsIdentity = new ClaimsIdentity(
             claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        
+
         var principal = new ClaimsPrincipal(claimsIdentity);
+        
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         
         return RedirectToAction("Index", "Home");
