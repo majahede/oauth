@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -27,35 +28,33 @@ public class AuthController : Controller
 
     public async Task<RedirectToActionResult> Callback()
     {
-
         if (Request.Query["error"] == "access_denied") return RedirectToAction("Index", "Home");
         
         var code = Request.Query["code"];
-
         var url = $"{_tokenEndpoint}?client_id={_clientId}&client_secret={_clientSecret}&code={code}&grant_type=authorization_code&redirect_uri={_callbackPath}";
 
         var client = new HttpClient();
         var response = await client.PostAsync(url, null);
+        
+        if(response.StatusCode != HttpStatusCode.OK) return RedirectToAction("Error", "Home");
+        
         var responseBody = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<dynamic>(responseBody); 
 
-        var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
-
-        var res = new TokenResponse()
+        var tokens = new TokenResponse()
         {
             AccessToken = result.access_token,
             IdToken = result.id_token
         };
 
         var handler = new JwtSecurityTokenHandler();
-        var idToken = handler.ReadJwtToken(res.IdToken);
-
-        if (res.AccessToken == null) return RedirectToAction("Index", "Home");
-
+        var idToken = handler.ReadJwtToken(tokens.IdToken);
+        
         var claims = new List<Claim>
         {
             new ("Id", idToken.Subject ), 
             new (ClaimTypes.Email, idToken.Claims.First(claim => claim.Type == "email").Value),
-            new ( "AccessToken", res.AccessToken),
+            new ( "AccessToken", tokens.AccessToken),
         };
 
         var claimsIdentity = new ClaimsIdentity(
@@ -79,6 +78,5 @@ public class AuthController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         
         return RedirectToAction("Index", "Home");
-        
     }
 }

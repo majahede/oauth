@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
-using System.Security.Claims;
+using System.Diagnostics;
+using System.Net;
 using assignment_wt1_oauth.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,17 +22,19 @@ public class HomeController : Controller
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var activityList = new List<Activity>();
+        var activityList = new List<GitlabActivity>();
         
         for (int i = 0; i < 2; i++)
         {
             var response = await client.GetAsync($"https://gitlab.lnu.se/api/v4/events?page={i + 1}&per_page=5{i}");
+            if(response.StatusCode != HttpStatusCode.OK) return RedirectToAction("Error", "Home");
+            
             var responseBody = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
             foreach (var activity in activities)
             {
-                var a = new Activity()
+                var a = new GitlabActivity()
                 {
                     ActionName = activity.action_name,
                     CreatedAt = activity.created_at,
@@ -41,7 +44,10 @@ public class HomeController : Controller
            
                 activityList.Add(a);
             }
+            
+            if(response.Headers.GetValues("x-total-pages").FirstOrDefault() == "1") break;
         }
+        
         return View(activityList);
     }
     
@@ -53,6 +59,9 @@ public class HomeController : Controller
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         var response = await client.GetAsync("https://gitlab.lnu.se/api/v4/user"); 
+        
+        if(response.StatusCode != HttpStatusCode.OK) return RedirectToAction("Error", "Home");
+        
         var responseBody = await response.Content.ReadAsStringAsync();
 
         var user = JsonConvert.DeserializeObject<dynamic>(responseBody);
@@ -65,5 +74,11 @@ public class HomeController : Controller
         ViewBag.Avatar = user.avatar_url;
 
         return View();
+    }
+    
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
     }
 }
