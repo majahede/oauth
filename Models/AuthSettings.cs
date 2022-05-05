@@ -10,4 +10,6 @@ public class AuthSettings
     
     public string TokenEndpoint { get; set; } = null!;
     
+    public string Scope { get; set; } = null!;
+    
 }

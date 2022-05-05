@@ -16,6 +16,7 @@ public class AuthController : Controller
     private readonly string _clientId;
     private readonly string _clientSecret;
     private readonly string _authorizationEndpoint;
+    private readonly string _scope;
 
     public AuthController(IOptions<AuthSettings> settings)
     {
@@ -24,6 +25,7 @@ public class AuthController : Controller
         _callbackPath = settings.Value.CallbackPath;
         _clientId = settings.Value.ClientId;
         _clientSecret = settings.Value.ClientSecret;
+        _scope = settings.Value.Scope;
     }
 
     public async Task<RedirectToActionResult> Callback()
@@ -69,8 +71,19 @@ public class AuthController : Controller
     
     public void Login()
     {
+        Random r = new Random();
+        String str = "abcdefghijklmnopqrstuvwxyz0123456789";
+        int size = 10;
+        String state = "";
+  
+        for (int i = 0; i < size; i++)
+        {
+            int x = r.Next(str.Length);
+            state += str[x];
+        }
+        
         Response.Redirect(
-            $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state=12345&scope=read_api+read_user+openid+profile+email");
+            $"{_authorizationEndpoint}?client_id={_clientId}&redirect_uri={_callbackPath}&response_type=code&state={state}&scope={_scope}");
     }
     
     public async Task<RedirectToActionResult> Logout()
